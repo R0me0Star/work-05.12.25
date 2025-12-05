@@ -1,103 +1,158 @@
 #include <iostream>
 
-namespace topit {
-
+namespace topit
+{
   struct p_t { int x, y; };
   bool operator==(p_t, p_t);
   bool operator!=(p_t, p_t);
-  struct f_t { p_t aa, bb; };
+  struct f_t{ p_t aa, bb; };
 
-  struct IDraw {
+  struct IDraw
+  {
     virtual ~IDraw() = default;
     virtual p_t begin() const = 0;
     virtual p_t next(p_t) const = 0;
   };
 
-  struct Dot : IDraw {
+  struct Dot : IDraw
+  {
     Dot(int x, int y);
-    explicit Dot(p_t dd); // ������ ������������ � ������� ���������������
+    explicit Dot(p_t dd);
     p_t begin() const override;
     p_t next(p_t) const override;
     p_t d;
   };
-  // �������� �������:
-  // - �������� ��� 2-3 ������:
-  //   - ������������ �������
-  //   - �������������� �������
-  //   - ��������� ��� 45 �������� �����
-  //   - ��������� ���� ������
 
-  // ��������� �������� ������ ������� �� ��������� (�����) ������
-  // - extend...
+  struct Segment : IDraw
+  {
+    Segment(p_t a, p_t b);
+    p_t begin() const override;
+    p_t next(p_t) const override;
+    p_t aa, bb;
+  };
+
+  struct Pair : IDraw
+  {
+    Pair(p_t a, p_t b);
+    p_t begin() const override;
+    p_t next(p_t) const override;
+    p_t f, s;
+  };
+
   size_t points(const IDraw& d, p_t** pts, size_t& s);
-
-  // ����� ������� � �������� �� ������ ���������� ����� ����� � ������������ �����
   f_t frame(const p_t* pts, size_t s);
-
-  // ��������� ������� (�� ����� �������� ���-�� �������� � �������)
   char* canvas(f_t fr, char fill);
-
-  //���������� ����� �������� � ���������� � ��������� �������
-  void paint(char* cnv, f_t fr, p_t p, char fill);
-
-  // ����� ���������� ������� �� ������ ��������, ������������ �������
+  void paint(char* cnv, f_t fr, p_t pts, char fill);
   void flush(std::ostream& os, const char* cnv, f_t fr);
 }
 
-int main() {
+int main()
+{
   using namespace topit;
   int err = 0;
   IDraw* shps[3] = {};
   p_t* pts = nullptr;
   size_t s = 0;
-  try {
+
+  try 
+  {
     shps[0] = new Dot(0, 0);
     shps[1] = new Dot(5, 7);
     shps[2] = new Dot(-5, -2);
 
     for (size_t i = 0; i < 3; ++i) {
-      s += points(*(shps[i]), &pts, s);
+      s += points(*(shps[0]), &pts, s);
     }
+
     f_t fr = frame(pts, s);
     char* cnv = canvas(fr, '.');
 
-    for (size_t i = 0 : i < s; ++i) {
+    for (size_t i = 0; i < s; ++i) {
       paint(cnv, fr, pts[i], '#');
     }
     flush(std::cout, cnv, fr);
     delete[] cnv;
-  } catch (...) {
+  } 
+  catch (...) 
+  {
     err = 2;
-    std::cerr << "Bad drawing\n"
+    std::cerr << "Bad drawing\n";
   }
 
+  delete[] pts;
   delete shps[0];
   delete shps[1];
   delete shps[2];
   return err;
 }
-topit::Dot::Dot(p_t dd):
+
+topit::Dot::Dot(int x, int y) :
   IDraw(),
-  d{dd}
+  d{ x, y }
 {}
-topit::Dot::Dot(int x, int y):
+
+topit::Dot::Dot(p_t dd) :
   IDraw(),
-  d{x, y}
+  d{ dd }
 {}
-topit::p_t topit::Dot::begin() const {
+
+bool topit::operator==(p_t a, p_t b)
+{
+  return a.x == b.x && a.y == b.y;
+}
+
+bool topit::operator!=(p_t a, p_t b)
+{
+  return !(a == b);
+}
+
+topit::p_t topit::Dot::begin() const
+{
   return d;
 }
-topit::p_t topit::Dot::next(p_t prev) const {
+
+topit::p_t topit::Dot::next(p_t prev) const
+{
   if (prev != begin()) {
     throw std::logic_error("bad impl");
   }
   return d;
 }
 
-bool topit::operator==(p_t a, p_t b) { 
-  return a.x == b.x && a.y == b.y;
+topit::Segment::Segment(p_t a, p_t b) :
+  IDraw(),
+  aa{ a },
+  bb{ b }
+{
 }
 
-bool topit::operator!=(p_t a, p_t b) {
-  return !(a == b);
+topit::p_t topit::Segment::begin() const
+{
+  return aa;
+}
+
+topit::p_t topit::Segment::next(p_t prev) const
+{
+  if (prev == aa) return bb;
+  if (prev == bb) throw std::logic_error("bad impl");
+  throw std::logic_error("bad impl");
+}
+
+topit::Pair::Pair(p_t a, p_t b) :
+  IDraw(),
+  f{ a },
+  s{ b }
+{
+}
+
+topit::p_t topit::Pair::begin() const
+{
+  return f;
+}
+
+topit::p_t topit::Pair::next(p_t prev) const
+{
+  if (prev == f) return s;
+  if (prev == s) throw std::logic_error("bad impl");
+  throw std::logic_error("bad impl");
 }
