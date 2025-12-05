@@ -22,3 +22,7 @@ int main() {
 bool topit::operator==(p_t a, p_t b) { 
   return a.x == b.x && a.y == b.y;
 }
+
+bool topit::operator!=(p_t a, p_t b) {
+  return !(a == b);
+}
