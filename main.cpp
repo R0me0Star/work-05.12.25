@@ -1,8 +1,11 @@
 #include <iostream>
 
-struct p_t {
-  int x, y;
-};
+namespace topit {
+  struct p_t { int x, y; };
+  bool operator==(p_t, p_t);
+  bool operator!=(p_t, p_t);
+  struct f_t { p_t aa, bb; };
+}
 
 struct IDraw {
   virtual p_t begin() const;
@@ -11,5 +14,11 @@ struct IDraw {
 };
 
 int main() {
-  return 0;
+  using topit::p_t;
+  p_t a{1, 0}, b{1, 0};
+  std::cout << (a == b) << "\n";
+}
+
+bool topit::operator==(p_t a, p_t b) { 
+  return a.x == b.x && a.y == b.y;
 }
