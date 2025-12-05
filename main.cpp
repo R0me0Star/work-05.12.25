@@ -5,13 +5,13 @@ namespace topit {
   bool operator==(p_t, p_t);
   bool operator!=(p_t, p_t);
   struct f_t { p_t aa, bb; };
-}
 
-struct IDraw {
-  virtual p_t begin() const;
-  virtual p_t next(p_t) const;
-  virtual ~IDraw();
-};
+  struct IDraw {
+    virtual ~IDraw() = default;
+    virtual p_t begin() const = 0;
+    virtual p_t next(p_t) const = 0;
+  };
+}
 
 int main() {
   using topit::p_t;
