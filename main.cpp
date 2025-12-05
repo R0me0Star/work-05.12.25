@@ -1,6 +1,7 @@
 #include <iostream>
 
 namespace topit {
+
   struct p_t { int x, y; };
   bool operator==(p_t, p_t);
   bool operator!=(p_t, p_t);
@@ -19,20 +20,25 @@ namespace topit {
     p_t next(p_t) const override;
     p_t d;
   };
+  size_t points(const IDraw& d, p_t** pts, size_t& s);
+  f_t frame(const p_t* pts, size_t s);
 }
 
 int main() {
-  using topit::IDraw;
-  using topit::Dot;
+  using namespace topit;
   int err = 0;
   IDraw* shps[3] = {};
+  p_t* pts = nullptr;
+  size_t s = 0;
   try {
     shps[0] = new Dot(0, 0);
     shps[1] = new Dot(5, 7);
     shps[2] = new Dot(-5, -2);
     // TODO:
-    // [1] ������� ��� ����� �� ����� 
-    // [2] ��������� �������������� �������������
+    for (size_t i = 0; i < 3; ++i) {
+      s += points(*(shps[i]), &pts, s);
+    }
+    f_t fr = frame(pts, s);
     // [3] ����������� ������� (canvas) ������� �������
     // - ��������� ������� '.'
     // [4] ���������� �� ������� ��� ����� (������� ������� �� �����)
