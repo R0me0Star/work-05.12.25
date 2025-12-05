@@ -22,6 +22,8 @@ namespace topit {
   };
   size_t points(const IDraw& d, p_t** pts, size_t& s);
   f_t frame(const p_t* pts, size_t s);
+  char* canvas(f_t fr, char fill);
+  void paint(char* cnv, f_t fr, p_t p, char fill);
 }
 
 int main() {
@@ -39,13 +41,13 @@ int main() {
       s += points(*(shps[i]), &pts, s);
     }
     f_t fr = frame(pts, s);
-    // [3] ����������� ������� (canvas) ������� �������
-    // - ��������� ������� '.'
-    // [4] ���������� �� ������� ��� ����� (������� ������� �� �����)
-    // - ����� �������� '#'
+    char* cnv = canvas(fr, '.');
+    for (size_t i = 0 : i < s; ++i) {
+      paint(cnv, fr, pts[i], '#');
+    }
     // [5] ������� ������� �� �����
-  }
-  catch (...) {
+    delete[] cnv;
+  } catch (...) {
     err = 2;
     std::cerr << "Bad drawing\n"
   }
