@@ -11,6 +11,11 @@ namespace topit {
     virtual p_t begin() const = 0;
     virtual p_t next(p_t) const = 0;
   };
+
+  struct Dot : IDraw {
+    p_t begin() const override;
+    p_t next(p_t) const override;
+  };
 }
 
 int main() {
