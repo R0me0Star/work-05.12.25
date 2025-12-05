@@ -22,7 +22,31 @@ namespace topit {
 }
 
 int main() {
-  using topit::p_t;
+  using topit::IDraw;
+  using topit::Dot;
+  int err = 0;
+  IDraw* shps[3] = {};
+  try {
+    shps[0] = new Dot(0, 0);
+    shps[1] = new Dot(5, 7);
+    shps[2] = new Dot(-5, -2);
+    // TODO:
+    // [1] ������� ��� ����� �� ����� 
+    // [2] ��������� �������������� �������������
+    // [3] ����������� ������� (canvas) ������� �������
+    // - ��������� ������� '.'
+    // [4] ���������� �� ������� ��� ����� (������� ������� �� �����)
+    // - ����� �������� '#'
+    // [5] ������� ������� �� �����
+  }
+  catch (...) {
+    err = 2;
+    std::cerr << "Bad drawing\n"
+  }
+  delete shps[0];
+  delete shps[1];
+  delete shps[2];
+  return err;
 }
 topit::Dot::Dot(p_t dd):
   IDraw(),
